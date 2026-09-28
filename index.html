@@ -32,23 +32,24 @@
 
             <br>
 
-            Link to webpage: (TODO) <a href="https://cs184.eecs.berkeley.edu/fa26">cs184.eecs.berkeley.edu/fa26</a>
+            Link to webpage: <a href="https://cal-cs184-student.github.io/hw1-pr-writeup/">https://cal-cs184-student.github.io/hw1-pr-writeup/</a>
 
             <br>
 
             Link to GitHub repository: <a href="https://github.com/cal-cs184-student/hw1-pr">https://github.com/cal-cs184-student/hw1-pr</a>
-
-            <figure>
-                <img src="assets/lion.jpg" alt="Lion" style="width:50%" />
-                <figcaption>You can add images with captions!</figcaption>
-            </figure>
 
             <!--
     We've already added one heading per task, to make your write-up as navigable when grading. Please fit your write-up within these sections!
     -->
 
             <h2>Overview</h2>
-            Give a high-level overview of what you implemented in this homework. Think about what you've built as a whole. Share your thoughts on what interesting things you've learned from completing the homework.
+            <p>Essentially, I have built many different parts to rasterize more and more complicated images using harder and complex techniques. Initially, I started Task 1 simple by getting minimum and maximum x and y values to form a bounding box. In turn, this would shrink the size of which coordinates to check to only within reasonable bounds. Because I created the bounding box before checking, I created something similar to an algorithm that would check every sample in a box.</p>
+            <p>In Task 2, I learned how to apply supersampling, which is a technique that has high memory and speed usage, but amazing for antialiasing. I implemented numerous functions from the original method of rasterization to the new and improved version. A supersample rate of 1 is similar to the normal sample rate, and the higher the supersample rate the better the antialiasing. Essentially, it gives the image a more smooth look when rasterized.</p>
+            <p>Task 3 taught me about transforms and how to encode them using the functions provided in class. Scale, rotate, and translate all had different functions needed to implement in order to work properly. By playing around with each function, I managed to create a fun image using translation and rotation.</p>
+            <p>Moving on to Task 4, I got the hang of barycentric coordinates. By taking three different points on a triangle and then converging their colors at a point, you end up with a gradient, as each point within a triangle represented a different color based on the distance from each point. Using this, I ended up with a circle gradient after applying the functions necessary, building off of Task 2.</p>
+            <p>Task 5 taught me how to implement pixel sampling for textures. Pixel sampling chooses a color based off of the texture provided; I applied this through conversion of texture coordinates to the corresponding pixels. Nearest sampling takes the closest texel provided and uses that for the pixel, while milinear sampling takes the average of the 4 closest texels to blend the colors. Rasterizing the triangle was similar to Task 4, except it would call upon texture mapping functions.</p>
+            <p>Finally, for Task 6, I learned level sampling. This sampling chooses a specific mipmap level to use. It takes a lower resolution and uses that to sample instead of the original resolution to help with speed and memory. I calculated how fast the texture coordinates would change in between pixels, getting UV coordinates for every position, as well as one to the right and one down. After calculating the differences between each of the coordinates, I would scale it up to match the actual resolution of the image. After doing all of this, I reflected on how each kind of sampling differed based on memory usage, speed, and antialiasing.</p>
+            <p>I found it interesting seeing how different yet similar these applications of rasterization were. I figured they would be quite different, as each of them have their own unique way of sampling from the image or texture provided, but I found that there was plenty of overlap between the rasterizations. I also appreciated the different ways to apply the functions we learned in class into the code to see how it unfolded. Even when making insane errors that would result in completely wrong colors showing up, it gave me a baseline understanding of how to code graphics through different methods.</p>
 
             <h2>Task 1: Drawing Single-Color Triangles</h2>
             <p>I rasterized triangles by first computing the bounding box. I took the minimum x and y coordinates as well as the maximum x and y coordinates to get the smallest space that would fit the whole triangle. Out of the three values, I choose the biggest or smallest and then compare it to either 0 or the width/height depending on the value I am looking for.</p>
@@ -67,7 +68,6 @@
             <p>Going down the line, I changed fill_pixel() so that the supersamples for points and lines still color with the same color. Since this function isn't used for rasterizing the triangle, this change is okay. Speaking of, for rasterize_triangle, it changed from task 1 by testing the subsamples instead of the pixels.</p>
             <p>For both set_sample_rate and set_framebuffer_target, I simply changed the resize to account for the sample rate, not just the width and height. Finally, for resolve_to_framebuffer, this function simply changes the supersampled picture into the framebuffer. The code essentially averages the colors of the samples and then converts the color into a mix of the sampled colors.</p>
 
-            <p>Here is an example 2x2 gridlike structure using an HTML table. Each <b>tr</b> is a row and each <b>td</b> is a column in that row. You might find this useful for framing and showing your result images in an organized fashion.</p>
             <div style="display: flex; flex-direction: column; align-items: center;">
                 <table style="width: 100%; text-align: center; border-collapse: collapse;">
                     <tr>
@@ -159,7 +159,7 @@
 
             <h2>Task 6: "Level Sampling" with mipmaps for texture mapping</h2>
             <p>Level sampling essentially chooses which mipmap level to use. Mipmaps are smaller than the original texture, so texture sampling can take from a lower resolution when the pixels on the screen are too detailed to pull from properly.</p>
-            <p>I essentially calculate how fast texture coordinates change between pixels. I get the UV coordinates in each position as well as one to the right and one downward. Calculating these gets the differences between coordinates and then scaling it to the width and height of the actual texture. L_ZERO takes from the original, L_NEAREST rounds to the nearest available level, and L_LINEAR as an interpolation between neighboring mipmaps.</p>
+            <p>I essentially calculate how fast texture coordinates change between pixels. I get the UV coordinates in each position as well as one to the right and one downward. Calculating these gets the differences between coordinates and then scaling it to the width and height of the actual texture. L_ZERO takes from the original, L_NEAREST rounds to the nearest available level, and L_LINEAR acts as an interpolation between neighboring mipmaps.</p>
             <p>Pixel sampling has low memory usage and typically pretty fast, but there are better options specifically for antialiasing. Level sampling is also pretty fast, but takes up more memory compared to pixel sampling. Antialiasing is much better specifically for textures. Supersampling is the slowest of the three and takes up a lot of memory usage. The best part of supersampling is that its antialiasing is stellar compared to the other two.</p>
 
             <div style="display: flex; flex-direction: column; align-items: center;">
